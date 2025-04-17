@@ -1,18 +1,35 @@
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from "react-bootstrap";
+import { useDispatch } from "react-redux";  
 import Rating from "../components/Rating";
 import { useGetProductDetailsQuery } from "../slices/productApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { addToCart } from "../slices/cartSlice";
 function ProductScreen() {
   const { id: productId } = useParams();
+  const [qty, setQty] = useState(1);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     data: product,
     isLoading,
     error,
   } = useGetProductDetailsQuery(productId);
-
+ const addtoCartHandler = () => {  
+    dispatch(addToCart({ ...product, qty }));
+    console.log(qty)
+  }
   return (
     <>
       <Link
@@ -100,6 +117,34 @@ function ProductScreen() {
                         </Col>
                       </Row>
                     </ListGroup.Item>
+                    {product.countInStock > 0 && (
+                      <ListGroup.Item>
+                        <Row>
+                          <Col>Qty:</Col>
+                          <Col>
+                            <Form.Control
+                              as="select"
+                              value={qty}
+                              onChange={(e) => setQty(Number(e.target.value))}
+                              style={{
+                                borderRadius: "0.25rem",
+                                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                              }}
+                              className="form-select"
+                            >
+                              {[...Array(product.countInStock).keys()].map(
+                                (x) => (
+                                  <option key={x + 1} value={x + 1}>
+                                    {x + 1}
+                                  </option>
+                                )
+                              )}
+
+                            </Form.Control>
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    )}
                     <ListGroup.Item>
                       <Button
                         variant="primary"
@@ -117,6 +162,7 @@ function ProductScreen() {
                         onMouseOut={(e) =>
                           (e.target.style.backgroundColor = "#007bff")
                         }
+                        onClick={addtoCartHandler}
                       >
                         Add to Cart
                       </Button>
