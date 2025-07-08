@@ -3,10 +3,10 @@ name: Backend DevSecOps
 on:
   push:
     paths:
-      - 'frontend/server/**'
+      - 'frontend/**'
   pull_request:
     paths:
-      - 'frontend/server/**'
+      - 'frontend/**'
 
 jobs:
   audit-and-lint:
