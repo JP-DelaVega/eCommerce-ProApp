@@ -1,9 +1,17 @@
 version: '3.8'
 
 services:
-  app:
+  frontend:
     build:
       context: ./frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
     ports:
       - "5000:5000"
     networks:
