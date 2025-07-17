@@ -5,7 +5,7 @@ dotenv.config();
 import connectDB from "./config/db.js";
 import {notFound, errorHandler} from './middleware/errorMiddleware.js'
 import productRoutes from "./routes/productRoutes.js";
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 
 connectDB();
 // Initialize Express app
