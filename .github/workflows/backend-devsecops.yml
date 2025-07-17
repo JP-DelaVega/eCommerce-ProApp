@@ -1,0 +1,39 @@
+name: Backend DevSecOps
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  audit-and-lint:
+    name: Audit & Lint Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run npm audit fix
+        run: npm audit fix
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+
+      - name: Run ESLint
+        run: |
+          npx eslint . || echo "Lint warnings found"
