@@ -1,12 +1,12 @@
-name: Build Backend Docker Image
+name: Build - NO Trigger for now
 
-on:
-  push:
-    paths:
-      - 'frontend/**'
-  pull_request:
-    paths:
-      - 'frontend/**'
+#on:
+  #push:
+   # paths:
+   #   - 'frontend/**'
+#  pull_request:
+ #  paths:
+     # - 'frontend/**'
 
 jobs:
   docker-build:
