@@ -1,0 +1,37 @@
+name: Docker CI, Build and Test Both Images
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  docker-ci:
+    runs-on: ubuntu-latest
+    name: Build & Test Backend + Frontend Containers
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Backend Docker Image
+      run: docker build -t ecommerce-backend:ci ./backend
+
+    - name: Build Frontend Docker Image
+      run: docker build -t ecommerce-frontend:ci ./frontend
+
+    - name: Run Backend Container (Test)
+      run: |
+        docker run -d --rm -p 3000:3000 --name backend-test ecommerce-backend:ci
+        sleep 5
+        curl --fail http://localhost:3000 || (docker logs backend-test && exit 1)
+
+    - name: Run Frontend Container (Test)
+      run: |
+        docker run -d --rm -p 5173:5173 --name frontend-test ecommerce-frontend:ci
+        sleep 5
+        curl --fail http://localhost:5173 || (docker logs frontend-test && exit 1)
